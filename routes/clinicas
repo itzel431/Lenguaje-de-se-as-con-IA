@@ -1,0 +1,52 @@
+const express = require("express");
+const router = express.Router();
+const Clinica = require("../models/Clinica");
+
+router.get("/", async (req, res) => {
+  try {
+    const clinicas = await Clinica.find();
+    res.json(clinicas);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener clínicas", error });
+  }
+});
+
+router.post("/", async (req, res) => {
+  try {
+    const nuevaClinica = new Clinica(req.body);
+    await nuevaClinica.save();
+    res.status(201).json(nuevaClinica);
+  } catch (error) {
+    res.status(400).json({ mensaje: "Error al crear clínica", error });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const clinica = await Clinica.findById(req.params.id);
+    if (!clinica) return res.status(404).json({ mensaje: "Clínica no encontrada" });
+    res.json(clinica);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener clínica", error });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    const clinicaActualizada = await Clinica.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(clinicaActualizada);
+  } catch (error) {
+    res.status(400).json({ mensaje: "Error al actualizar clínica", error });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await Clinica.findByIdAndDelete(req.params.id);
+    res.json({ mensaje: "Clínica eliminada correctamente" });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al eliminar clínica", error });
+  }
+});
+
+module.exports = router;

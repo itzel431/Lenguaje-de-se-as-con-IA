@@ -1,0 +1,57 @@
+const express = require("express");
+const router = express.Router();
+const Traduccion = require("../models/Traduccion");
+
+// Obtener todas las traducciones
+router.get("/", async (req, res) => {
+  try {
+    const traducciones = await Traduccion.find();
+    res.json(traducciones);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener traducciones", error });
+  }
+});
+
+// Crear una nueva traducción
+router.post("/", async (req, res) => {
+  try {
+    const nuevaTraduccion = new Traduccion(req.body);
+    await nuevaTraduccion.save();
+    res.status(201).json(nuevaTraduccion);
+  } catch (error) {
+    res.status(400).json({ mensaje: "Error al crear traducción", error });
+  }
+});
+
+// Obtener una traducción por ID
+router.get("/:id", async (req, res) => {
+  try {
+    const traduccion = await Traduccion.findById(req.params.id);
+    if (!traduccion) return res.status(404).json({ mensaje: "Traducción no encontrada" });
+    res.json(traduccion);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al obtener traducción", error });
+  }
+});
+
+// Actualizar una traducción
+router.put("/:id", async (req, res) => {
+  try {
+    const traduccionActualizada = await Traduccion.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(traduccionActualizada);
+  } catch (error) {
+    res.status(400).json({ mensaje: "Error al actualizar traducción", error });
+  }
+});
+
+// Eliminar una traducción
+router.delete("/:id", async (req, res) => {
+  try {
+    await Traduccion.findByIdAndDelete(req.params.id);
+    res.json({ mensaje: "Traducción eliminada correctamente" });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al eliminar traducción", error });
+  }
+});
+
+module.exports = router;
