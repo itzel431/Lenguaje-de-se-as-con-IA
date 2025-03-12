@@ -1,23 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const Clinica = require('../models/Clinica');
+const Senal = require('../models/Senal');
 
-// Crear una nueva clínica
+// Crear una nueva señal
 router.post('/', async (req, res) => {
     try {
-        const nuevaClinica = new Clinica(req.body);
-        await nuevaClinica.save();
-        res.status(201).send(nuevaClinica);
+        const nuevaSenal = new Senal(req.body);
+        await nuevaSenal.save();
+        res.status(201).send(nuevaSenal);
     } catch (error) {
         res.status(400).send(error);
     }
 });
 
-// Obtener todas las clínicas
+// Obtener todas las señales
 router.get('/', async (req, res) => {
     try {
-        const clinicas = await Clinica.find();
-        res.send(clinicas);
+        const senales = await Senal.find();
+        res.send(senales);
     } catch (error) {
         res.status(500).send(error);
     }
